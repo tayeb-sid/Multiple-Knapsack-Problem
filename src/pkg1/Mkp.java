@@ -3,6 +3,7 @@ package pkg1;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
@@ -161,5 +162,51 @@ public class Mkp {
 		return null;
 		
 	}
+	 void sortByFValue(LinkedList<State> open) {
+		// TODO Auto-generated method stub
+		 if(open.size()>0) {
+		 Comparator<State> comparator = Comparator.comparing(State::getF).reversed();
+		 Collections.sort(open,comparator);
+		 }
+	}
+	public State AStar(State startNode) {
+		//coming soon
+		//h poids sac - poids object choisi
+		//g la valeur de l object choisi
+		
+		ArrayList<State> closed=new ArrayList<State>();
+		LinkedList<State> open = new LinkedList<>();
+		open.push(startNode);
+		while(!open.isEmpty()) {
+			State currentState=open.pop();
+			//currentState.printMatrix();
+			closed.add(currentState);
+			if(this.Evaluate(currentState)) {
+				System.out.println("number of developped nodes: "+closed.size());
+				return currentState;
+			}
+			for(Item object:this.objects) {
+			for(KnapSack sac:this.knapsacks) {
+					State childState=new State(currentState);
+					if(!Tools.objectAlreadyTaken(childState.getMatrix(), (object.getNum()))) {
+						childState.insertItemInSac(object.getNum(), sac.getNum());
+						//g= valeur de l'objet choisi;
+						childState.setG(object.getValue());
+						//h=poids sac - poids object choisi
+						childState.setH(sac.getPMAX()-object.getWeight());
+						
+						open.add(childState);
+						}
+				}
+			
+			}
+			//sort the children nodes on the value of F
+			sortByFValue(open);
+		}
+		System.out.println("number of developped nodes: "+closed.size());
+		return null;
+	
+	}
+	
 	
 }
