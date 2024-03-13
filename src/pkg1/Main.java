@@ -12,13 +12,13 @@ public class Main {
 		int NbKnapsacks=3;
 		int NbObjects=4;
 		int MinValue=100;
-		ArrayList<Item>objects =new ArrayList<Item>();
+		/*ArrayList<Item>objects =new ArrayList<Item>();
 		objects.add(new Item(1,5,25));
 		objects.add(new Item(2,15,30));
 		ArrayList<KnapSack>knapsacks=new ArrayList<>();
 		knapsacks.add(new KnapSack(1,10));
 		knapsacks.add(new KnapSack(2,20));
-		
+		*/
 		//Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue, objects, knapsacks);
 		//randome instance
 		Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue);
@@ -32,7 +32,7 @@ public class Main {
 		long startTimeDFS= System.currentTimeMillis();	    
 		sol=mkp.DFS(initialState);
 		long endTimeDFS= System.currentTimeMillis();
-	    System.out.println("DFS execution time: " + (endTimeDFS - startTimeDFS) + " milliseconds");
+	        System.out.println("DFS execution time: " + (endTimeDFS - startTimeDFS) + " milliseconds");
 
 		if(sol!=null) {
 			sol.printMatrix();
@@ -45,14 +45,25 @@ public class Main {
 		long startTimeBFS= System.currentTimeMillis();	    
 		sol=mkp.BFS(initialState);
 		long endTimeBFS= System.currentTimeMillis();
-	    System.out.println("BFS execution time: " + (endTimeBFS - startTimeBFS) + " milliseconds");
+	        System.out.println("BFS execution time: " + (endTimeBFS - startTimeBFS) + " milliseconds");
 		if(sol!=null) {
 			sol.printMatrix();
 			System.out.println("solution: \n"+sol);
 		}
 		else System.out.println("no solution");
 		
-		
+		System.out.println("*********AStar***********");
+		long startTimeAStar= System.currentTimeMillis();	    
+		sol=mkp.AStar(initialState);
+		long endTimeAStar= System.currentTimeMillis();
+	        System.out.println("AStar execution time: " + (endTimeAStar - startTimeAStar) + " milliseconds");
+
+		if(sol!=null) {
+			sol.printMatrixAStar();
+			System.out.println("solution: \n"+sol);
+		}
+		else System.out.println("no solution");
+
 		
 
 		
