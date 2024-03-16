@@ -75,10 +75,9 @@ public class Mkp {
 					value+=this.objects.get(j).getValue();
 				}
 			}
-			//System.out.println("Knapsack " + (i + 1) + " weight: " + sumWeightsLine);
+		
 			if(sumWeightsLine>this.knapsacks.get(i).getPMAX())return false;
 		}
-		//System.out.println("Total value: " + value);
 		if(value<this.MinValue) return false;
 		return true;
 	}
@@ -96,10 +95,7 @@ public class Mkp {
 		while(!open.isEmpty()) {
 			State currentState=open.pop();
 	
-			//just to visualize stuff we can remove it later
-			//System.out.println("selected : "+currentState);
 			closed.add(currentState);
-			//System.out.println("solution? "+Evaluate(currentState));
 			if(this.Evaluate(currentState)) {
 				System.out.println("number of developped nodes: "+closed.size());
 				return currentState;
@@ -114,11 +110,6 @@ public class Mkp {
 				}
 			
 			}
-			/*System.out.println("-------");
-			System.out.println("open");
-			open.forEach(x->System.out.println(x));
-			System.out.println("-------");
-		*/
 		}
 		System.out.println("number of developped nodes: "+closed.size());
 		return null;
@@ -133,10 +124,7 @@ public class Mkp {
 
 		while(!open.isEmpty()) {
 			State currentState=open.poll();	
-			//just to visualize stuff we can remove it later
-			//System.out.println("selected : "+currentState);
 			closed.add(currentState);
-			//System.out.println("solution? "+Evaluate(currentState));
 			if(this.Evaluate(currentState)) {
 				System.out.println("number of developped nodes: "+closed.size());
 				return currentState;
@@ -152,34 +140,23 @@ public class Mkp {
 						}
 				}
 			}
-			/*System.out.println("-------");
-			System.out.println("open");
-			open.forEach(x->System.out.println(x));
-			System.out.println("-------");
-		*/
+	
 		}
 		System.out.println("number of developped nodes: "+closed.size());
 		return null;
 		
 	}
-	 void sortByFValue(LinkedList<State> open) {
-		// TODO Auto-generated method stub
-		 if(open.size()>0) {
-		 Comparator<State> comparator = Comparator.comparing(State::getF).reversed();
-		 Collections.sort(open,comparator);
-		 }
-	}
+
 	public State AStar(State startNode) {
-		//coming soon
 		//h poids sac - poids object choisi
 		//g la valeur de l object choisi
 		
 		ArrayList<State> closed=new ArrayList<State>();
-		LinkedList<State> open = new LinkedList<>();
-		open.push(startNode);
+		//prioritize children with highest F value
+		Queue<State> open = new PriorityQueue<>(Comparator.comparingInt(State::getF).reversed());
+		open.offer(startNode);
 		while(!open.isEmpty()) {
-			State currentState=open.pop();
-			//currentState.printMatrix();
+			State currentState=open.poll();
 			closed.add(currentState);
 			if(this.Evaluate(currentState)) {
 				System.out.println("number of developped nodes: "+closed.size());
@@ -195,13 +172,12 @@ public class Mkp {
 						//h=poids sac - poids object choisi
 						childState.setH(sac.getPMAX()-object.getWeight());
 						
-						open.add(childState);
+						open.offer(childState);
 						}
 				}
 			
 			}
-			//sort the children nodes on the value of F
-			sortByFValue(open);
+			
 		}
 		System.out.println("number of developped nodes: "+closed.size());
 		return null;
