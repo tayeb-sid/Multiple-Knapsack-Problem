@@ -6,4 +6,5 @@
  *
  */
 module Projet_MKP {
+  requires java.desktop;
 }
