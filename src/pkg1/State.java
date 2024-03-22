@@ -4,13 +4,14 @@ import java.util.Arrays;
 
 public class State {
 	int [][] matrix;
-	int h,g;
+	int h,g,nbDeveloppedNodes;
 	
 	public State() {}
 	// create a copy 
     public State(State originalState) {
     	this.h=0;
     	this.g=0;
+    	this.nbDeveloppedNodes=0;
         int nbKnapsacks = originalState.matrix.length;
         int nbObjects = originalState.matrix[0].length;
         this.matrix = new int[nbKnapsacks][nbObjects];
@@ -24,6 +25,7 @@ public class State {
 	public State(int nbKnapsacks,int nbObjects) {
 		this.h=0;
     	this.g=0;
+    	this.nbDeveloppedNodes=0;
 		this.matrix=new int [nbKnapsacks][nbObjects];
 	}
 	public void insertItemInSac(int j,int i) {
@@ -66,7 +68,7 @@ public class State {
 			for(int j=0;j<this.matrix[0].length;j++) {
 				
 				if(this.matrix[i][j]!=0) {
-					s.append("object "+(j+1)+" in sac "+(i+1)+"\n");
+					s.append("object "+(j+1)+" in sac "+(i+1)+"      \n");
 					//not the initial state
 					empty=false;
 				}
@@ -75,6 +77,7 @@ public class State {
 		if(empty)return "initial state no objects selected yet\n";
 		else return s.toString();
 	}
+
 	
 	
 	int getH() {
@@ -92,5 +95,11 @@ public class State {
 	}
 	public int getF() {
 		return (this.h+this.g);
+	}
+	public void setNbDeveloppedNodes(int n) {
+		this.nbDeveloppedNodes=n;
+	}
+	public int getNbDeveloppedNodes() {
+		return this.nbDeveloppedNodes;
 	}
 }
