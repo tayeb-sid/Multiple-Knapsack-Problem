@@ -7,7 +7,7 @@ public class KnapSack {
 		this.PMAX=PMAX;
 	}
 	public String toString() {
-		return "S"+this.num+" {p:"+this.PMAX+"}";
+		return "Knapsack"+this.num+" {p:"+this.PMAX+"}";
 	}
 	public int getPMAX() {
 		return this.PMAX;
@@ -15,6 +15,12 @@ public class KnapSack {
 	
 	public int getNum() {
 		return this.num;
+	}
+	public String[]stringify(){
+		String[] arr = new String[2];
+		arr[0]="Knapsack "+this.num;
+		arr[1]=String.valueOf(this.PMAX);
+		return arr;
 	}
 }
 	
