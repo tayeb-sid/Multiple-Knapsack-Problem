@@ -1,72 +1,72 @@
 package pkg1;
 
-import java.util.ArrayList;
-
+//import java.util.ArrayList;
 
 
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//just an example
+		
+	
+		//launch in console
 		int NbKnapsacks=3;
-		int NbObjects=4;
-		int MinValue=100;
-		/*ArrayList<Item>objects =new ArrayList<Item>();
+		int NbObjects=5;
+		int MinValue=150;
+		//add an the objects/knapsacks manually
+		/*
+		ArrayList<Item>objects =new ArrayList<Item>();
 		objects.add(new Item(1,5,25));
 		objects.add(new Item(2,15,30));
 		ArrayList<KnapSack>knapsacks=new ArrayList<>();
 		knapsacks.add(new KnapSack(1,10));
 		knapsacks.add(new KnapSack(2,20));
+		
+		Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue, objects, knapsacks);
 		*/
-		//Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue, objects, knapsacks);
+		
 		//randome instance
 		Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue);
 		System.out.println(mkp);
-
 	
 		State initialState=new State(NbKnapsacks,NbObjects);
-		System.out.println("*********DFS***********");
-		
 		State sol=null;
+		
+		System.out.println("*********DFS***********");
 		long startTimeDFS= System.currentTimeMillis();	    
 		sol=mkp.DFS(initialState);
 		long endTimeDFS= System.currentTimeMillis();
-	        System.out.println("DFS execution time: " + (endTimeDFS - startTimeDFS) + " milliseconds");
+	    System.out.println("DFS execution time: " + (endTimeDFS - startTimeDFS) + " milliseconds");
 
 		if(sol!=null) {
 			sol.printMatrix();
-			System.out.println("solution: \n"+sol);
+			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
 		else System.out.println("no solution");
 		
-		
-		System.out.println("*********BFS***********");
+			System.out.println("*********BFS***********");
 		long startTimeBFS= System.currentTimeMillis();	    
 		sol=mkp.BFS(initialState);
 		long endTimeBFS= System.currentTimeMillis();
-	        System.out.println("BFS execution time: " + (endTimeBFS - startTimeBFS) + " milliseconds");
+	    System.out.println("BFS execution time: " + (endTimeBFS - startTimeBFS) + " milliseconds");
 		if(sol!=null) {
 			sol.printMatrix();
-			System.out.println("solution: \n"+sol);
+			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
 		else System.out.println("no solution");
-		
+	
 		System.out.println("*********AStar***********");
 		long startTimeAStar= System.currentTimeMillis();	    
 		sol=mkp.AStar(initialState);
 		long endTimeAStar= System.currentTimeMillis();
-	        System.out.println("AStar execution time: " + (endTimeAStar - startTimeAStar) + " milliseconds");
+	    System.out.println("DFS execution time: " + (endTimeAStar - startTimeAStar) + " milliseconds");
 
 		if(sol!=null) {
 			sol.printMatrixAStar();
-			System.out.println("solution: \n"+sol);
+			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
 		else System.out.println("no solution");
-
-		
-
-		
+	 
 	}
 
 }
