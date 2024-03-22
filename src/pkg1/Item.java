@@ -28,6 +28,12 @@ public class Item {
 	public String toString() {
 		return "obj"+this.num+"{w:"+this.weight+" v:"+this.value+"}";
 	}
-
+	public String[]stringify(){
+		String[] arr = new String[3];
+		arr[0]="object "+this.num;
+		arr[1]=String.valueOf(this.value);
+		arr[2]=String.valueOf(this.weight);
+		return arr;
+	}
 
 }
