@@ -43,6 +43,9 @@ public class Mkp {
 			objects.add(new Item(i+1,randomWeight,randomValue));
 		}
 	}
+	public void setMinValue(int value) {
+		this.MinValue=value;
+	}
 	public void setKnapSacks(ArrayList<KnapSack>knapsacks) {
 		this.knapsacks=knapsacks;
 	}
@@ -76,14 +79,33 @@ public class Mkp {
 					value+=this.objects.get(j).getValue();
 				}
 			}
-		
+			//System.out.println("Knapsack " + (i + 1) + " weight: " + sumWeightsLine);
 			if(sumWeightsLine>this.knapsacks.get(i).getPMAX())return false;
 		}
+		//System.out.println("Total value: " + value);
 		if(value<this.MinValue) return false;
 		return true;
 	}
 
+	public int totalValue(State state) {
+		int value=0;
+		for(int i=0 ;i<this.NbKnapsacks;i++) {
+			for(int j=0 ;j<this.NbObjects;j++) {
+				if(state.getMatrix()[i][j]!=0)value+=this.objects.get(j).getValue();
+			}
+		}
+		return value;
+	}
 	
+	public int totalWeight(State state) {
+		int weight=0;
+		for(int i=0 ;i<this.NbKnapsacks;i++) {
+			for(int j=0 ;j<this.NbObjects;j++) {
+				if(state.getMatrix()[i][j]!=0)weight+=this.objects.get(j).getWeight();
+			}
+		}
+		return weight;
+	}
 	public State DFS(State startNode) {
 		ArrayList<State> closed=new ArrayList<State>();
 		Stack<State> open = new Stack<>();
@@ -95,10 +117,9 @@ public class Mkp {
 		open.push(startNode);
 		while(!open.isEmpty()) {
 			State currentState=open.pop();
-	
 			closed.add(currentState);
 			if(this.Evaluate(currentState)) {
-				System.out.println("number of developped nodes: "+closed.size());
+				currentState.setNbDeveloppedNodes(closed.size());
 				return currentState;
 			}
 			for(Item object:objs) {
@@ -111,11 +132,15 @@ public class Mkp {
 				}
 			
 			}
+
 		}
-		System.out.println("number of developped nodes: "+closed.size());
-		return null;
+		
+		//retourner l'etat initial si ya pas de solution
+		startNode.setNbDeveloppedNodes(closed.size());
+		return startNode;
 	}
 	
+
 	
 	public State BFS(State startNode) {
 		
@@ -127,7 +152,7 @@ public class Mkp {
 			State currentState=open.poll();	
 			closed.add(currentState);
 			if(this.Evaluate(currentState)) {
-				System.out.println("number of developped nodes: "+closed.size());
+				currentState.setNbDeveloppedNodes(closed.size());
 				return currentState;
 			}
 			
@@ -141,13 +166,15 @@ public class Mkp {
 						}
 				}
 			}
-	
 		}
-		System.out.println("number of developped nodes: "+closed.size());
-		return null;
 		
+		//retourner l'etat initial si ya pas de solution
+		startNode.setNbDeveloppedNodes(closed.size());
+		return startNode;
 	}
-
+	
+	
+	
 	public State AStar(State startNode) {
 		//h poids sac - poids object choisi
 		//g la valeur de l object choisi
@@ -160,7 +187,7 @@ public class Mkp {
 			State currentState=open.poll();
 			closed.add(currentState);
 			if(this.Evaluate(currentState)) {
-				System.out.println("number of developped nodes: "+closed.size());
+				currentState.setNbDeveloppedNodes(closed.size());
 				return currentState;
 			}
 			for(Item object:this.objects) {
@@ -180,10 +207,52 @@ public class Mkp {
 			}
 			
 		}
-		System.out.println("number of developped nodes: "+closed.size());
-		return null;
+		
+		//retourner l'etat initial si ya pas de solution
+		startNode.setNbDeveloppedNodes(closed.size());
+		return startNode;
 	
 	}
 	
+
+	
+	//FOR GUI 
+	 public String[] getObjectNames() {
+		 String []arr=new String[this.NbObjects+1];
+		 arr[0]=" ";
+		 for(int i=1;i<=this.NbObjects;i++) {
+			 arr[i]="Object "+this.objects.get(i-1).getNum();
+		 }
+		 return arr;
+	 }
+	 public String[][] stringifyObjects(){
+		 String [][]arr=new String[this.NbObjects][3];
+		 for(int i=0;i<this.NbObjects;i++) {
+			 arr[i]=this.objects.get(i).stringify();
+		 }
+		 return arr;
+	 }
+	 public String[][] stringifyKnapsacks(){
+		 String [][]arr=new String[this.NbKnapsacks][2];
+		 for(int i=0;i<this.NbKnapsacks;i++) {
+			 arr[i]=this.knapsacks.get(i).stringify();
+		 }
+		 return arr;
+	 }
+	 public String[][] stringifySolution(State solution){
+		 String [][]arr=new String[this.NbKnapsacks][this.NbObjects+1];
+		 
+		 for(int i=0;i<this.NbKnapsacks;i++) {
+			 arr[i][0]="Knapsack "+this.knapsacks.get(i).getNum();
+			for(int j=0;j<this.NbObjects;j++) {
+				 if(solution.getMatrix()[i][j]!=0) arr[i][j+1]="X";
+				 else arr[i][j+1]=" ";
+			 }
+			 
+		 }
+		 
+		 return arr;
+	 }
+
 	
 }
