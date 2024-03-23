@@ -38,35 +38,33 @@ public class Main {
 		long endTimeDFS= System.currentTimeMillis();
 	    System.out.println("DFS execution time: " + (endTimeDFS - startTimeDFS) + " milliseconds");
 
-		if(sol!=null) {
+		if(sol==null||sol==initialState) System.out.println("no solution for this value");
+		else{
 			sol.printMatrix();
 			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
-		else System.out.println("no solution");
 		
 			System.out.println("*********BFS***********");
 		long startTimeBFS= System.currentTimeMillis();	    
 		sol=mkp.BFS(initialState);
 		long endTimeBFS= System.currentTimeMillis();
 	    System.out.println("BFS execution time: " + (endTimeBFS - startTimeBFS) + " milliseconds");
-		if(sol!=null) {
+		if(sol==null||sol==initialState) System.out.println("no solution for this value");
+		else{
 			sol.printMatrix();
 			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
-		else System.out.println("no solution");
-	
 		System.out.println("*********AStar***********");
 		long startTimeAStar= System.currentTimeMillis();	    
 		sol=mkp.AStar(initialState);
 		long endTimeAStar= System.currentTimeMillis();
-	    System.out.println("DFS execution time: " + (endTimeAStar - startTimeAStar) + " milliseconds");
+	    System.out.println("AStar execution time: " + (endTimeAStar - startTimeAStar) + " milliseconds");
 
-		if(sol!=null) {
-			sol.printMatrixAStar();
+		if(sol==null||sol==initialState) System.out.println("no solution for this value");
+		else{
+			sol.printMatrix();
 			System.out.println("solution: \n"+sol+" Total Value: "+mkp.totalValue(sol));
 		}
-		else System.out.println("no solution");
-	 
 	}
 
 }
