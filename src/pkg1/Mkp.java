@@ -46,11 +46,20 @@ public class Mkp {
 	public void setMinValue(int value) {
 		this.MinValue=value;
 	}
+	public int getMinValue() {
+		return this.MinValue;
+	}
 	public void setKnapSacks(ArrayList<KnapSack>knapsacks) {
 		this.knapsacks=knapsacks;
 	}
 	public void setObjects(ArrayList<Item>objects) {
 		this.objects=objects;
+	}
+	public ArrayList<Item>getObjects(){
+		return this.objects;
+	}
+	public ArrayList<KnapSack>getKnapsacks(){
+		return this.knapsacks;
 	}
 	public int getNbKnapsacs() {
 		return this.NbKnapsacks;
