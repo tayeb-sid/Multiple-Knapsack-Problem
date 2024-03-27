@@ -46,7 +46,7 @@ public class GUI extends JFrame{
 	int value;
 	 
 	public GUI() {
-		ImageIcon image = new ImageIcon("src\\logo.png");//create an image
+		ImageIcon image = new ImageIcon("src\\logo.png");
 		this.setIconImage(image.getImage());
 		
 		this.setTitle("Multiple Knapsack Problem Solver");
@@ -212,7 +212,17 @@ public class GUI extends JFrame{
 		//buttons
 		JButton generateBtn=new JButton("GENERATE");
 		JButton searchBtn=new JButton("SEARCH");
-		JButton selectBtn=new JButton("SELECT");
+		JButton selectBtn=new JButton("LOAD");
+		JButton saveBtn=new JButton("SAVE");
+		
+		saveBtn.setFocusable(false);
+		saveBtn.setPreferredSize(new Dimension(120,40));
+		saveBtn.setBackground(Color.LIGHT_GRAY);
+		saveBtn.setEnabled(false);
+		saveBtn.addActionListener(e->{
+				MkpInstanceSaver saver=new MkpInstanceSaver();
+				saver.saveInstance(mkp);
+		});
 		
 		selectBtn.setFocusable(false);
 		selectBtn.setPreferredSize(new Dimension(120,40));
@@ -224,6 +234,10 @@ public class GUI extends JFrame{
 			chooser.setCurrentDirectory(new File("./Instances"));
 			int response=chooser.showOpenDialog(this);
 			if(response==JFileChooser.APPROVE_OPTION) {
+				
+				saveBtn.setBackground(Color.LIGHT_GRAY);
+				saveBtn.setEnabled(false);
+				
 				File file = new File(chooser.getSelectedFile().getAbsolutePath());
 				searchBtn.setBackground(topPanelBgColor);
 				searchBtn.setEnabled(true);
@@ -316,7 +330,7 @@ public class GUI extends JFrame{
              }
              else {
             	 value= Integer.valueOf(text);
-            	if(nbObj>5 && nbSacs>2 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a lot of time and exhauste your machine memory\ndon't panic if the app freezes it's still searching :)","warning",JOptionPane.WARNING_MESSAGE);
+            	if(nbObj>5 && nbSacs>2 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a lot of time and exhauste your machine memory\ndon't panic if the app freezes it's just still searching :)","warning",JOptionPane.WARNING_MESSAGE);
 			      
             	 
             	 mkp=new Mkp(nbSacs,nbObj,value);
@@ -366,6 +380,10 @@ public class GUI extends JFrame{
 		        solutionLabel.setVisible(false);
 		        sp3.setVisible(false);
 		        
+		    	saveBtn.setBackground(topPanelBgColor);
+				saveBtn.setForeground(titleColor);
+				saveBtn.setEnabled(true);
+				
 		        solutionDescription.add(exectutionTimeLabel);
 				solutionDescription.add(executionTime);
 				solutionDescription.add(nbNodesLabel);
@@ -401,6 +419,9 @@ public class GUI extends JFrame{
 			
 				selectBtn.setBackground(Color.LIGHT_GRAY);
 				selectBtn.setEnabled(false);
+				
+				saveBtn.setBackground(Color.LIGHT_GRAY);
+				saveBtn.setEnabled(false);
 				
 				solutionDescription.setVisible(true);
 				solutionLabel.setVisible(true);
@@ -504,7 +525,8 @@ public class GUI extends JFrame{
 					generateBtn.setEnabled(true);
 					selectBtn.setBackground(topPanelBgColor);
 					selectBtn.setEnabled(true);
-					
+					//saveBtn.setBackground(topPanelBgColor);
+					//saveBtn.setEnabled(true);
 					tablesContainer.add(solutionDescription);
 					this.revalidate();
 				 
@@ -522,7 +544,8 @@ public class GUI extends JFrame{
 		sidePanel.add(b1);
 		sidePanel.add(b2);
 		sidePanel.add(b3);
-
+		
+		bottomPanel.add(saveBtn);
 		bottomPanel.add(selectBtn);
 		bottomPanel.add(generateBtn);
 		bottomPanel.add(searchBtn);
