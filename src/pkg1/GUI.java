@@ -526,6 +526,7 @@ public class GUI extends JFrame{
 					generateBtn.setEnabled(true);
 					selectBtn.setBackground(topPanelBgColor);
 					selectBtn.setEnabled(true);
+					saveBtn.setForeground(titleColor);
 					saveBtn.setBackground(topPanelBgColor);
 					saveBtn.setEnabled(true);
 					tablesContainer.add(solutionDescription);
