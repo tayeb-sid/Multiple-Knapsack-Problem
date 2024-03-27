@@ -7,11 +7,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,6 +27,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import pkg1.MkpInstanceFileReader.InvalidFileTypeException;
+import pkg1.MkpInstanceFileReader.InvalidInstanceException;
 
 @SuppressWarnings("serial")
 public class GUI extends JFrame{
@@ -206,7 +212,95 @@ public class GUI extends JFrame{
 		//buttons
 		JButton generateBtn=new JButton("GENERATE");
 		JButton searchBtn=new JButton("SEARCH");
+		JButton selectBtn=new JButton("SELECT");
 		
+		selectBtn.setFocusable(false);
+		selectBtn.setPreferredSize(new Dimension(120,40));
+		selectBtn.setBackground(topPanelBgColor);
+		selectBtn.setForeground(titleColor);
+		selectBtn.addActionListener(e->{
+			
+			JFileChooser chooser=new JFileChooser();
+			chooser.setCurrentDirectory(new File("./Instances"));
+			int response=chooser.showOpenDialog(this);
+			if(response==JFileChooser.APPROVE_OPTION) {
+				File file = new File(chooser.getSelectedFile().getAbsolutePath());
+				searchBtn.setBackground(topPanelBgColor);
+				searchBtn.setEnabled(true);
+				b1.setVisible(true);
+				b2.setVisible(true);
+				b3.setVisible(true);
+				try {
+				    mkp = MkpInstanceFileReader.readFromFile(file.getAbsolutePath());
+					System.out.println(mkp);
+				    nbSacs=mkp.getNbKnapsacs();
+					value=mkp.getMinValue();
+					nbObj=mkp.getNbObjects();
+					initialState=new State(nbSacs,nbObj);
+					
+					
+					valueInp.setText(String.valueOf(value));
+				    sacsSlider.setValue(nbSacs);
+				    objectsSlider.setValue(nbObj);
+			
+					objData = mkp.stringifyObjects();
+					sacsData = mkp.stringifyKnapsacks();
+					// Column Names
+			        String[] objColumnNames = { "Object", "Value($)", "Weight(KG)" };
+			        String[] sacsColumnNames = { "Knapsack", "Maximum Capacity(KG)"};
+				    
+			        JTable objs = new JTable(objData, objColumnNames );
+			        JTable sacs = new JTable(sacsData, sacsColumnNames);
+			        
+			        objs.setFont(new Font("Roboto",Font.PLAIN,14));
+			        sacs.setFont(new Font("Roboto",Font.PLAIN,14));     
+			        objs.setForeground(sidePanelTextColor);
+			        sacs.setForeground(sidePanelTextColor);
+			        objs.getTableHeader().setBackground(topPanelBgColor);
+			        objs.getTableHeader().setForeground(titleColor);
+			        objs.getTableHeader().setFont(labelsFont);
+			        sacs.getTableHeader().setBackground(topPanelBgColor);
+			        sacs.getTableHeader().setForeground(titleColor);
+			        sacs.getTableHeader().setFont((new Font("Roboto",Font.BOLD,15)));
+			       
+			        sp.setViewportView(objs);
+			        sp.setPreferredSize(new Dimension(350,130));
+			        sp.setBorder(BorderFactory.createLineBorder(titleColor));
+			        sp2.setBorder(BorderFactory.createLineBorder(titleColor));
+			        sp2.setPreferredSize(new Dimension(350,130));
+			        sp2.setViewportView(sacs);
+			        
+			   
+					
+					solutionDescription.setVisible(false);
+			        solutionLabel.setVisible(false);
+			        sp3.setVisible(false);
+			        
+			        solutionDescription.add(exectutionTimeLabel);
+					solutionDescription.add(executionTime);
+					solutionDescription.add(nbNodesLabel);
+					solutionDescription.add(nbNodes);
+					solutionDescription.add(totalValueLabel);
+					solutionDescription.add(totalValue);
+					solutionDescription.add(totalWeightLabel);
+					solutionDescription.add(totalWeight);
+					solutionDescription.add(solDescLabel);
+					solutionDescription.add(descScrollPane);
+					tablesContainer.add(sp);
+			        tablesContainer.add(sp2);
+					tablesContainer.add(solutionLabel);
+					
+					
+					this.revalidate();
+				    
+				} catch (IOException | InvalidInstanceException | InvalidFileTypeException e2) {
+				    e2.printStackTrace();
+				    JOptionPane.showMessageDialog(this, e2.getMessage(),"error",JOptionPane.ERROR_MESSAGE);
+				      
+				}
+			}
+			
+		});
 		generateBtn.setFocusable(false);
 		generateBtn.setPreferredSize(new Dimension(120,40));
 		generateBtn.setBackground(topPanelBgColor);
@@ -222,7 +316,7 @@ public class GUI extends JFrame{
              }
              else {
             	 value= Integer.valueOf(text);
-            	if(nbObj>5 && nbSacs>5 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a lot of time and exhauste your machine memory\ndon't panic if the app freezes it's still searching :)","warning",JOptionPane.WARNING_MESSAGE);
+            	if(nbObj>5 && nbSacs>2 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a lot of time and exhauste your machine memory\ndon't panic if the app freezes it's still searching :)","warning",JOptionPane.WARNING_MESSAGE);
 			      
             	 
             	 mkp=new Mkp(nbSacs,nbObj,value);
@@ -305,6 +399,9 @@ public class GUI extends JFrame{
 				generateBtn.setBackground(Color.LIGHT_GRAY);
 				generateBtn.setEnabled(false);
 			
+				selectBtn.setBackground(Color.LIGHT_GRAY);
+				selectBtn.setEnabled(false);
+				
 				solutionDescription.setVisible(true);
 				solutionLabel.setVisible(true);
 				long startTime;
@@ -405,7 +502,8 @@ public class GUI extends JFrame{
 					}
 					generateBtn.setBackground(topPanelBgColor);
 					generateBtn.setEnabled(true);
-				
+					selectBtn.setBackground(topPanelBgColor);
+					selectBtn.setEnabled(true);
 					
 					tablesContainer.add(solutionDescription);
 					this.revalidate();
@@ -425,6 +523,7 @@ public class GUI extends JFrame{
 		sidePanel.add(b2);
 		sidePanel.add(b3);
 
+		bottomPanel.add(selectBtn);
 		bottomPanel.add(generateBtn);
 		bottomPanel.add(searchBtn);
 		
