@@ -1,5 +1,7 @@
 package pkg1;
 
+//import java.io.IOException;
+
 //import java.util.ArrayList;
 
 
@@ -25,6 +27,13 @@ public class Main {
 		Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue, objects, knapsacks);
 		*/
 		
+		//read instance from a file
+		/*try {
+		    Mkp mkp = MkpInstanceFileReader.readFromFile("file path here");
+		    System.out.println(mkp);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}*/
 		//randome instance
 		Mkp mkp=new Mkp(NbKnapsacks, NbObjects, MinValue);
 		System.out.println(mkp);
