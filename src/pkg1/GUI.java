@@ -330,7 +330,7 @@ public class GUI extends JFrame{
              }
              else {
             	 value= Integer.valueOf(text);
-            	if(nbObj>5 && nbSacs>2 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a lot of time and exhauste your machine memory\ndon't panic if the app freezes it's just still searching :)","warning",JOptionPane.WARNING_MESSAGE);
+            	if(nbObj>5 && nbSacs>2 && value>200)JOptionPane.showMessageDialog(this, "The number of objects/knapsacks is too heigh the search may take a long  time and exhauste your machine memory\ndon't panic if the app freezes it's just still searching :)","warning",JOptionPane.WARNING_MESSAGE);
 			      
             	 
             	 mkp=new Mkp(nbSacs,nbObj,value);
