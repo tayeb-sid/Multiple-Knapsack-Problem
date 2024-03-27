@@ -218,6 +218,7 @@ public class GUI extends JFrame{
 		saveBtn.setFocusable(false);
 		saveBtn.setPreferredSize(new Dimension(120,40));
 		saveBtn.setBackground(Color.LIGHT_GRAY);
+		selectBtn.setForeground(titleColor);
 		saveBtn.setEnabled(false);
 		saveBtn.addActionListener(e->{
 				MkpInstanceSaver saver=new MkpInstanceSaver();
