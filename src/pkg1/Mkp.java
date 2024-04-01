@@ -88,10 +88,10 @@ public class Mkp {
 					value+=this.objects.get(j).getValue();
 				}
 			}
-			//System.out.println("Knapsack " + (i + 1) + " weight: " + sumWeightsLine);
+		
 			if(sumWeightsLine>this.knapsacks.get(i).getPMAX())return false;
 		}
-		//System.out.println("Total value: " + value);
+		
 		if(value<this.MinValue) return false;
 		return true;
 	}
