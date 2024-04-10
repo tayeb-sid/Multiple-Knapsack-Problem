@@ -95,7 +95,32 @@ public class Mkp {
 		if(value<this.MinValue) return false;
 		return true;
 	}
+	public int  Evaluate2(State state) {
+		int value=0;
+		for(int i=0;i<this.NbKnapsacks;i++) {
+			int sumWeightsLine=0;
+			for(int j=0;j<this.NbObjects;j++) {
+				if(state.getMatrix()[i][j]!=0) {
+					//sum the weights of the objects in knapsack i
+					sumWeightsLine+=this.objects.get(j).getWeight();
+					//calculate the total value of the objects in all the sacs
+					value+=this.objects.get(j).getValue();
 
+					if(sumWeightsLine>this.knapsacks.get(i).getPMAX()) {
+						System.out.println("pos: "+i+j);
+						//state.getMatrix()[i][j]=-1;
+					}
+				}
+				if(sumWeightsLine>this.knapsacks.get(i).getPMAX()) {
+					return -1;
+				}
+			}
+		
+		}
+		
+		if(value<this.MinValue) return -2;
+		return 0;
+	}
 	public int totalValue(State state) {
 		int value=0;
 		for(int i=0 ;i<this.NbKnapsacks;i++) {
@@ -112,6 +137,13 @@ public class Mkp {
 			for(int j=0 ;j<this.NbObjects;j++) {
 				if(state.getMatrix()[i][j]!=0)weight+=this.objects.get(j).getWeight();
 			}
+		}
+		return weight;
+	}
+	public int totalWeight(State state,int numSac) {
+		int weight=0;
+		for(int j=0;j<this.NbObjects;j++) {
+			if(state.getMatrix()[numSac][j]!=0)weight+=this.objects.get(j).getWeight();
 		}
 		return weight;
 	}
@@ -224,6 +256,18 @@ public class Mkp {
 	}
 	
 
+	public ArrayList<Item>getAvailableObjects(State state){
+		ArrayList<Item>availableObjects=new ArrayList<Item>(this.objects);
+		ArrayList<Item>unavailable=new ArrayList<Item>();
+		for(int i=0;i<this.NbKnapsacks;i++) {
+			for(int j=0;j<this.NbObjects;j++) {
+				if(state.getMatrix()[i][j]==1) unavailable.add(this.objects.get(j));
+			}
+		}
+		availableObjects.removeAll(unavailable);
+		Collections.sort(availableObjects,Comparator.comparingDouble(Item::getRatio).reversed());
+		return availableObjects;
+	}
 	
 	//FOR GUI 
 	 public String[] getObjectNames() {
@@ -263,5 +307,6 @@ public class Mkp {
 		 return arr;
 	 }
 
+	 
 	
 }

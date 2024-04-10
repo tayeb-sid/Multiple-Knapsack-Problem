@@ -2,6 +2,7 @@ package pkg1;
 
 public class Item {
 	private int weight,value,num;
+	boolean taken=false;
 	public Item(int num,int weight,int value){
 		this.num=num;
 		this.weight=weight;
@@ -34,6 +35,11 @@ public class Item {
 		arr[1]=String.valueOf(this.value);
 		arr[2]=String.valueOf(this.weight);
 		return arr;
+	}
+	public double getRatio() {
+		double v =Double.valueOf(this.value);
+		double w=Double.valueOf(this.weight);
+		return v/w;
 	}
 
 }

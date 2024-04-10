@@ -28,34 +28,29 @@ public class State {
     	this.nbDeveloppedNodes=0;
 		this.matrix=new int [nbKnapsacks][nbObjects];
 	}
-	public void insertItemInSac(int j,int i) {
-		this.matrix[i-1][j-1]=1;
+	public State(int[][]matrix) {
+		this.matrix=matrix;
+	}
+	public void insertItemInSac(int item,int sac) {
+		this.matrix[sac-1][item-1]=1;
 	}
 	public int [][]getMatrix(){
 		return this.matrix;
 		}
+	public void setMatrix(int [][] matrix) {
+		this.matrix=matrix;
+	}
 	public void printMatrix() {
-		
+	
 	for(int[] line:this.matrix) {
-			System.out.print(" [");
-			for(int col:line) {
-				System.out.print(col);
-			}
-			
-			System.out.println("]");
-		}
+		System.out.println(Arrays.toString(line));
+	}
 	}
 
 	public void printMatrixAStar() {
-		
 		System.out.println("H:"+this.getH()+" G:"+this.getG()+" F:"+(this.getH()+this.getG()));
 		for(int[] line:this.matrix) {
-			System.out.print(" [");
-			for(int col:line) {
-				System.out.print(col);
-			}
-			
-			System.out.println("]");
+			System.out.println(Arrays.toString(line));	
 		}
 	}
 	public boolean isEqualTo(State state) {
