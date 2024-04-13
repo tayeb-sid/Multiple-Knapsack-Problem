@@ -8,7 +8,8 @@ import java.util.Random;
 import pkg1.*;
 public class GeneticAlgorithm {
 	Mkp mkp;
-	
+	Comparator<State> fitnessComparator = (s1, s2) -> Integer.compare(this.fitness(s2), this.fitness(s1));
+
 	public GeneticAlgorithm(Mkp mkp) {
 		this.mkp=mkp;
 	}
@@ -46,11 +47,10 @@ public class GeneticAlgorithm {
 				i++;
 			}
 		}
-		
+		Collections.sort(population,fitnessComparator);
 		return population;
 	}
 	public LinkedList<State>ElitistSelection(LinkedList<State>population){
-		Comparator<State> fitnessComparator = (s1, s2) -> Integer.compare(this.fitness(s2), this.fitness(s1));
 		Collections.sort(population, fitnessComparator);
 		LinkedList<State>parents=new LinkedList<State>();
 		parents.add(population.poll());
@@ -129,7 +129,36 @@ public class GeneticAlgorithm {
 		children.add(child2);
 		return children;
 	}
-	
+	public ArrayList<State>BiPointCrossover(State parent1,State parent2,int CrossoverPoint1,int CrossoverPoint2){
+		ArrayList<State>children = new ArrayList<State>();
+		int nbObj=this.mkp.getNbObjects();
+		int nbSacs=this.mkp.getNbKnapsacs();
+
+		State child1=new State(nbSacs,nbObj);
+		State child2=new State(nbSacs,nbObj);
+		
+		
+		for(int sac_i=0;sac_i<nbSacs;sac_i++) {
+			//int sacCapacity=mkp.getKnapsacks().get(sac_i).getPMAX();
+			
+			//child1 = first part of parent1 + second part of parent2
+			//child1 part1
+			
+			System.arraycopy(parent1.getMatrix()[sac_i], 0, child1.getMatrix()[sac_i], 0, CrossoverPoint1);
+			System.arraycopy(parent1.getMatrix()[sac_i],CrossoverPoint2,child1.getMatrix()[sac_i],CrossoverPoint2,nbObj-CrossoverPoint2);
+			System.out.println("qsd"+(nbObj-CrossoverPoint2));
+			
+			//child2 = first part of parent2+ second part of parent1 
+			//child2 part1
+			System.arraycopy(parent2.getMatrix()[sac_i], 0, child2.getMatrix()[sac_i], 0, CrossoverPoint1);
+			System.arraycopy(parent2.getMatrix()[sac_i],CrossoverPoint2,child2.getMatrix()[sac_i],CrossoverPoint2,nbObj-CrossoverPoint2);
+		
+		}
+		children.add(child1);
+		children.add(child2);
+		System.out.println(children);
+		return children;
+	}
 	public  State Mutation(State child, double mutationRate){
 		State mutatedChild =new State(child);
 		int nbMutations=(int) Math.round(mutationRate*mkp.getNbObjects());
@@ -152,4 +181,54 @@ public class GeneticAlgorithm {
 		
 		return mutatedChild;
 	}
+	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,int crossoverPoint2,double mutationRate){
+		LinkedList<State>finalPopulation=new LinkedList<State>();
+		finalPopulation.addAll(population);
+		for(int i=0;i<maxIter;i++) {
+			LinkedList<State>parents=ElitistSelection(finalPopulation);
+			State p1= parents.poll();
+			State p2= parents.poll();
+			ArrayList<State>children;
+			if(crossoverPoint2==-1)children=SinglePointCrossover(p1, p2, crossoverPoint1);
+			else children=BiPointCrossover(p1, p2, crossoverPoint1,crossoverPoint2);
+			ArrayList<State>mutatedChildren=new ArrayList<State>();
+			mutatedChildren.add(Mutation(children.get(0), mutationRate));
+			mutatedChildren.add(Mutation(children.get(1), mutationRate));
+			finalPopulation.clear();
+			finalPopulation.addAll(children);
+			finalPopulation.addAll(mutatedChildren);
+		
+		
+		}
+		return finalPopulation;
+		//Collections.sort(population,fitnessComparator);
+	}
+	State getBestSol(LinkedList<State>population) {
+		Collections.sort(population,fitnessComparator);
+		return population.poll();
+	}
+	
+	 public String[][] stringifyPopulation(LinkedList<State> population){
+		 String [][]arr=new String[population.size()][2];
+		 
+		 for(int i=0;i<population.size();i++) {
+			 arr[i][0]=population.get(i).toString();
+			 arr[i][1]=String.valueOf(fitness(population.get(i)));
+			 
+		 }
+		 
+		 return arr;
+	 }
+	 public String[][] stringifyPopulation2(LinkedList<State> population){
+		 String [][]arr=new String[population.size()][2];
+		 
+		 for(int i=0;i<population.size();i++) {
+			 arr[i][0]=population.get(i).matrixToString();
+			 arr[i][1]=String.valueOf(fitness(population.get(i)));
+			 
+		 }
+		 
+		 return arr;
+	 }
+
 }

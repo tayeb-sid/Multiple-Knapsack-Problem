@@ -2,6 +2,7 @@ package pkg2;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import pkg1.*;
@@ -49,7 +50,7 @@ public class Main {
 			
 			
 			}
-				
+			Collections.sort(population,GA.fitnessComparator);
 			System.out.println("*********final population*********");
 			population.forEach(c->{
 				int x=mkp.Evaluate2(c);

@@ -57,7 +57,7 @@ public class State {
 		return Arrays.deepEquals(this.getMatrix(), state.getMatrix());
 	}
 	public String toString() {
-		Boolean empty=true;
+		//Boolean empty=true;
 		StringBuffer s=new  StringBuffer();
 		for(int i=0;i<this.matrix.length;i++) {
 			for(int j=0;j<this.matrix[0].length;j++) {
@@ -65,14 +65,19 @@ public class State {
 				if(this.matrix[i][j]!=0) {
 					s.append("object "+(j+1)+" in sac "+(i+1)+"      \n");
 					//not the initial state
-					empty=false;
+					//empty=false;
 				}
 			}
 		}
-		if(empty)return "initial state no objects selected yet\n";
-		else return s.toString();
+	 return s.toString();
 	}
-
+	public String matrixToString() {
+		StringBuffer s=new  StringBuffer();
+		for(int [] line :this.matrix) {
+			s.append(Arrays.toString(line)+"\n");
+		}
+		return s.toString();
+	}
 	
 	
 	int getH() {
