@@ -444,7 +444,8 @@ public class GUI extends JFrame{
 						executionTime.setText(time);
 						description.setText(bestSol.toString()+"\n");
 						totalValue.setText(String.valueOf(mkp.totalValue(bestSol))+" $");
-						totalWeight.setText(String.valueOf(mkp.totalWeight(bestSol))+" KG");
+						int nbUsedObjects=nbObj-mkp.getAvailableObjects(bestSol).size();
+						totalWeight.setText(String.valueOf(mkp.totalWeight(bestSol))+" KG (used "+nbUsedObjects+"/"+nbObj+" objects)");
 						
 					 
 					}
