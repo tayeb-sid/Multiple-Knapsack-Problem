@@ -408,7 +408,10 @@ public class GUI extends JFrame{
 						//start GA
 						System.out.println(crossoverPoint1+"  "+crossoverPoint2);
 						startTime= System.currentTimeMillis();	    
-						LinkedList<State>finalPopulation=GA.Execute(population, maxIter, crossoverPoint1,crossoverPoint2, mutationRate);
+						LinkedList<State>finalPopulation;
+						if(crossoverPoint2==-1)finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, mutationRate);
+						else finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, crossoverPoint2,mutationRate);
+						
 						//after n iterations
 						if(checkbox.isSelected())initialPopulationMatrix=GA.stringifyPopulation(finalPopulation);
 						else initialPopulationMatrix=GA.stringifyPopulation2(finalPopulation);

@@ -32,7 +32,7 @@ public class Main {
 			LinkedList<State>population=GA.generatePopulation(NbIndividus);	
 			population.forEach(individual->{
 						individual.printMatrix();
-							System.out.println(" fitness: "+GA.fitness(individual)+" "+mkp.Evaluate(individual));
+							System.out.println(" fitness: "+GA.fitness(individual));
 					
 						});
 			
@@ -53,12 +53,8 @@ public class Main {
 			Collections.sort(population,GA.fitnessComparator);
 			System.out.println("*********final population*********");
 			population.forEach(c->{
-				int x=mkp.Evaluate2(c);
-				c.printMatrix();
 				
-				System.out.print(x+" ");
-				if(x==-1) System.out.print("weight constraint "); 
-				else if(x==-2)System.out.print("value constraint ");
+				c.printMatrix();
 				System.out.println("fitness: "+GA.fitness(c));
 				System.out.println("weight: "+mkp.totalWeight(c));
 				System.out.println(mkp.getAvailableObjects(c));

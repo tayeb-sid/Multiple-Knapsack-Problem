@@ -139,19 +139,41 @@ public class GeneticAlgorithm {
 		
 		
 		for(int sac_i=0;sac_i<nbSacs;sac_i++) {
-			//int sacCapacity=mkp.getKnapsacks().get(sac_i).getPMAX();
+			int sacCapacity=mkp.getKnapsacks().get(sac_i).getPMAX();
 			
-			//child1 = first part of parent1 + second part of parent2
-			//child1 part1
+			for(int i=0;i<CrossoverPoint1;i++) {
+				child1.getMatrix()[sac_i][i]=parent1.getMatrix()[sac_i][i];
+				child2.getMatrix()[sac_i][i]=parent2.getMatrix()[sac_i][i];
+				}
+			for(int i=CrossoverPoint2-1;i<nbObj;i++) {
+				child1.getMatrix()[sac_i][i]=parent1.getMatrix()[sac_i][i];
+				child2.getMatrix()[sac_i][i]=parent2.getMatrix()[sac_i][i];
+				}
 			
-			System.arraycopy(parent1.getMatrix()[sac_i], 0, child1.getMatrix()[sac_i], 0, CrossoverPoint1);
-			System.arraycopy(parent1.getMatrix()[sac_i],CrossoverPoint2,child1.getMatrix()[sac_i],CrossoverPoint2,nbObj-CrossoverPoint2);
-			System.out.println("qsd"+(nbObj-CrossoverPoint2));
+			//child1 middle part
+			int child1CurrentWeight=mkp.totalWeight(child1, sac_i);
+			for(int j=CrossoverPoint1;j<CrossoverPoint2-1;j++) {
+				if(parent2.getMatrix()[sac_i][j]!=0) {
+					int currentObjWeight=mkp.getObjects().get(j).getWeight();
+					
+					if(child1CurrentWeight+currentObjWeight <=sacCapacity) {
+						child1.getMatrix()[sac_i][j]=1;
+						child1CurrentWeight+=currentObjWeight;
+					}	
+				}
+			}
 			
-			//child2 = first part of parent2+ second part of parent1 
-			//child2 part1
-			System.arraycopy(parent2.getMatrix()[sac_i], 0, child2.getMatrix()[sac_i], 0, CrossoverPoint1);
-			System.arraycopy(parent2.getMatrix()[sac_i],CrossoverPoint2,child2.getMatrix()[sac_i],CrossoverPoint2,nbObj-CrossoverPoint2);
+			//child2 middle part
+			int child2CurrentWeight=mkp.totalWeight(child2, sac_i);
+			for(int j=CrossoverPoint1;j<CrossoverPoint2-1;j++) {
+				if(parent1.getMatrix()[sac_i][j]!=0) {
+					int currentObjWeight=mkp.getObjects().get(j).getWeight();
+					if(child2CurrentWeight+currentObjWeight <=sacCapacity) {
+						child2.getMatrix()[sac_i][j]=1;
+						child2CurrentWeight+=currentObjWeight;
+					}	
+				}
+			}
 		
 		}
 		children.add(child1);
@@ -181,6 +203,27 @@ public class GeneticAlgorithm {
 		
 		return mutatedChild;
 	}
+	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,double mutationRate){
+		LinkedList<State>finalPopulation=new LinkedList<State>();
+		finalPopulation.addAll(population);
+		for(int i=0;i<maxIter;i++) {
+			LinkedList<State>parents=ElitistSelection(finalPopulation);
+			State p1= parents.poll();
+			State p2= parents.poll();
+			ArrayList<State>children;
+			children=SinglePointCrossover(p1, p2, crossoverPoint1);
+			ArrayList<State>mutatedChildren=new ArrayList<State>();
+			mutatedChildren.add(Mutation(children.get(0), mutationRate));
+			mutatedChildren.add(Mutation(children.get(1), mutationRate));
+			finalPopulation.clear();
+			finalPopulation.addAll(children);
+			finalPopulation.addAll(mutatedChildren);
+		
+		
+		}
+		return finalPopulation;
+		//Collections.sort(population,fitnessComparator);
+	}
 	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,int crossoverPoint2,double mutationRate){
 		LinkedList<State>finalPopulation=new LinkedList<State>();
 		finalPopulation.addAll(population);
@@ -189,8 +232,7 @@ public class GeneticAlgorithm {
 			State p1= parents.poll();
 			State p2= parents.poll();
 			ArrayList<State>children;
-			if(crossoverPoint2==-1)children=SinglePointCrossover(p1, p2, crossoverPoint1);
-			else children=BiPointCrossover(p1, p2, crossoverPoint1,crossoverPoint2);
+			children=BiPointCrossover(p1, p2, crossoverPoint1,crossoverPoint2);
 			ArrayList<State>mutatedChildren=new ArrayList<State>();
 			mutatedChildren.add(Mutation(children.get(0), mutationRate));
 			mutatedChildren.add(Mutation(children.get(1), mutationRate));
