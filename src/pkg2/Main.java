@@ -17,7 +17,7 @@ public class Main {
 		int crossoverPoint=5;
 		double mutationRate=0.3;
 		int maxIter=10;
-		File file = new File("./Instances/inst1(3sac 6obj 250).txt");
+		File file = new File("./Instances/inst 5(4sacs 8objs 300).txt");
 		try {
 			
 			
@@ -35,6 +35,7 @@ public class Main {
 							System.out.println(" fitness: "+GA.fitness(individual));
 					
 						});
+			
 			
 			for(int i=0;i<maxIter;i++) {
 				LinkedList<State>parents=GA.ElitistSelection(population);

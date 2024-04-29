@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -70,7 +72,7 @@ public class GUI extends JFrame{
 		this.setTitle("Multiple Knapsack Problem Solver (part2)");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
-		this.setSize(950,650);
+		this.setSize(950,680);
 		//panels
 		JPanel sidePanel=new JPanel();
 		sidePanel.setBorder(new EmptyBorder(0,0,0,0));
@@ -409,8 +411,8 @@ public class GUI extends JFrame{
 						System.out.println(crossoverPoint1+"  "+crossoverPoint2);
 						startTime= System.currentTimeMillis();	    
 						LinkedList<State>finalPopulation;
-						if(crossoverPoint2==-1)finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, mutationRate);
-						else finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, crossoverPoint2,mutationRate);
+						if(crossoverPoint2==-1)finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, mutationRate,selectionMethod);
+						else finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, crossoverPoint2,mutationRate,selectionMethod);
 						
 						//after n iterations
 						if(checkbox.isSelected())initialPopulationMatrix=GA.stringifyPopulation(finalPopulation);
@@ -528,6 +530,8 @@ public class GUI extends JFrame{
 	            return false; 
 	        }
 	    }
+	 
+	  
 	  JLabel crossoverLabel=new JLabel("Crossover");
 	  JRadioButton b1=new JRadioButton("Single Point");
 	  JRadioButton b2=new JRadioButton("Bi-point");
@@ -542,15 +546,16 @@ public class GUI extends JFrame{
 		JLabel maxIterationsLabel=new JLabel("Max Iterations");
 		JTextField initPopulationInp=new JTextField();
 		JTextField maxIterInp=new JTextField();
-		
-
+		JLabel selectionLabel=new JLabel("Selection");
+		JComboBox<String> comboBox;
+		String selectionMethod="Elitist";
 		public void GAParamsPanel() {
 			
 		  	if(ParamsPanel.getComponents().length>0) {
 		  		for(Component c:ParamsPanel.getComponents())ParamsPanel.remove(c);
 		  	}
 		  	ParamsPanel.setBackground(null);
-			ParamsPanel.setLayout(new GridLayout(11,1,0,0));
+			ParamsPanel.setLayout(new GridLayout(13,1,0,0));
 			//ParamsPanel.setBorder(BorderFactory.createLineBorder(titleColor,1,true));
 			crossoverLabel.setForeground(sidePanelTextColor);
 			crossoverLabel.setFont(labelsFont);
@@ -561,7 +566,7 @@ public class GUI extends JFrame{
 			
 			b1.setFont(new Font("Roboto",Font.BOLD,12));
 			b2.setFont(new Font("Roboto",Font.BOLD,12));
-		
+			
 			b1.setBackground(null);
 			b2.setBackground(null);
 			ButtonGroup group=new ButtonGroup();
@@ -593,10 +598,18 @@ public class GUI extends JFrame{
 			radioBtnsPanel.setBackground(null);
 		
 		
-			
 	
-			
+			String options []= {"Elitist","Random","Tournament","Roulette"};
+			comboBox=new JComboBox<String>(options);
+			comboBox.setFont(new Font("Roboto",Font.BOLD,12));
+			comboBox.addItemListener(e->{
+				if(e.getStateChange()==ItemEvent.SELECTED) {
+					selectionMethod=(String)comboBox.getSelectedItem();					
+				}
+			});
 	
+
+		
 			point1Slider.setMaximum(nbObj);
 			point1Slider.setMinimum(1);
 			point1Slider.setValue(nbObj/2);
@@ -650,6 +663,11 @@ public class GUI extends JFrame{
 			maxIterationsLabel.setPreferredSize(new Dimension(180,5));
 			maxIterationsLabel.setHorizontalAlignment(JLabel.CENTER);
 			
+			selectionLabel.setForeground(sidePanelTextColor);
+			selectionLabel.setFont(labelsFont);
+			selectionLabel.setPreferredSize(new Dimension(180,5));
+			selectionLabel.setHorizontalAlignment(JLabel.CENTER);
+			
 			maxIterInp.setFont(labelsFont);
 			//maxIterInp.setPreferredSize(new Dimension(100,20));
 			maxIterInp.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -662,12 +680,16 @@ public class GUI extends JFrame{
 			ParamsPanel.add(initPopulationInp);
 			ParamsPanel.add(maxIterationsLabel);
 			ParamsPanel.add(maxIterInp);
+			ParamsPanel.add(selectionLabel);
+			ParamsPanel.add(comboBox);
 			ParamsPanel.add(crossoverLabel);
 			ParamsPanel.add(radioBtnsPanel);
 			ParamsPanel.add(point1Slider);
 			ParamsPanel.add(point2Slider);
 			ParamsPanel.add(mutationRateLabel);
 			ParamsPanel.add(mutationSlider);
+		
+			
 			ParamsPanel.add(checkbox);
 			
 	

@@ -69,6 +69,52 @@ public class GeneticAlgorithm {
 		parents.add(population.poll());
 		return parents;
 	}
+	public LinkedList<State>TournamentSelection(LinkedList<State>population){
+		int tournament_size =2;
+		LinkedList<State>parents=new LinkedList<State>();
+	    Random random = new Random();
+
+	        for (int i = 0; i < 2; i++) { // Select two parents
+	            State fittestIndividual = null;
+	            for (int j = 0; j < tournament_size; j++) {
+	                int randomIndex = random.nextInt(population.size());
+	                State candidate = population.get(randomIndex);
+	                if (fittestIndividual == null || fitness(candidate)> fitness(fittestIndividual)) {
+	                    fittestIndividual = candidate;
+	                }
+	            }
+	            parents.add(fittestIndividual);
+	        }
+
+	        return parents;
+	}
+	public LinkedList<State>RouletteSelection(LinkedList<State>population){
+		LinkedList<State>parents=new LinkedList<State>();
+		int totalFitness=0;
+		for(State s:population)totalFitness+=fitness(s);
+		
+		double[] rouletteWheel = new double[population.size()];
+	    double currentSum = 0;
+	    
+	    for (int i = 0; i < population.size(); i++) {
+	        currentSum += (double)fitness(population.get(i))/ totalFitness;
+	        rouletteWheel[i] = currentSum;
+	    }
+	    Random random = new Random();
+        for (int i = 0; i < 2; i++) { // Select two parents
+            double spin = random.nextDouble();
+            int index = 0;
+            while (spin > rouletteWheel[index]) {
+                index++;
+            }
+            parents.add(population.get(index));
+        }
+
+		return parents;
+
+	}
+	
+	
 	public int fitness(State solution) {
 		return this.mkp.totalValue(solution);
 	}
@@ -203,11 +249,26 @@ public class GeneticAlgorithm {
 		
 		return mutatedChild;
 	}
-	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,double mutationRate){
+	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,double mutationRate,String selectionMethod){
 		LinkedList<State>finalPopulation=new LinkedList<State>();
 		finalPopulation.addAll(population);
 		for(int i=0;i<maxIter;i++) {
-			LinkedList<State>parents=ElitistSelection(finalPopulation);
+			LinkedList<State>parents = null;
+			switch (selectionMethod) {
+		    case "Elitist":
+		    	parents=ElitistSelection(finalPopulation);
+		        break;
+		    case "Random":
+		    	parents=RandomSelection(finalPopulation);
+		        break;
+		    case "Tournament":
+		    	parents=TournamentSelection(finalPopulation);
+		        break;
+		    case "Roulette":
+		    	parents=RouletteSelection(finalPopulation);
+		        break;
+			}
+			
 			State p1= parents.poll();
 			State p2= parents.poll();
 			ArrayList<State>children;
@@ -224,11 +285,25 @@ public class GeneticAlgorithm {
 		return finalPopulation;
 		//Collections.sort(population,fitnessComparator);
 	}
-	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,int crossoverPoint2,double mutationRate){
+	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,int crossoverPoint2,double mutationRate,String selectionMethod){
 		LinkedList<State>finalPopulation=new LinkedList<State>();
 		finalPopulation.addAll(population);
 		for(int i=0;i<maxIter;i++) {
-			LinkedList<State>parents=ElitistSelection(finalPopulation);
+			LinkedList<State>parents = null;
+			switch (selectionMethod) {
+		    case "Elitist":
+		    	parents=ElitistSelection(finalPopulation);
+		        break;
+		    case "Random":
+		    	parents=RandomSelection(finalPopulation);
+		        break;
+		    case "Tournament":
+		    	parents=TournamentSelection(finalPopulation);
+		        break;
+		    case "Roulette":
+		    	parents=RouletteSelection(finalPopulation);
+		        break;
+			}
 			State p1= parents.poll();
 			State p2= parents.poll();
 			ArrayList<State>children;
@@ -250,6 +325,9 @@ public class GeneticAlgorithm {
 		return population.poll();
 	}
 	
+	
+	
+	//for GUI
 	 public String[][] stringifyPopulation(LinkedList<State> population){
 		 String [][]arr=new String[population.size()][2];
 		 
