@@ -19,7 +19,7 @@ public class Main {
 			
 			//read an instance from a file
 			mkp = MkpInstanceFileReader.readFromFile(file.getAbsolutePath());
-			
+			//mkp.setMinValue(100);
 			System.out.println(mkp);
 			
 			/*
