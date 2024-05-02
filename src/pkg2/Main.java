@@ -2,8 +2,6 @@ package pkg2;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 
 import pkg1.*;
 import pkg1.MkpInstanceFileReader.InvalidFileTypeException;
@@ -13,11 +11,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int NbIndividus=4;
-		int crossoverPoint=5;
-		double mutationRate=0.3;
-		int maxIter=10;
-		File file = new File("./Instances/inst 5(4sacs 8objs 300).txt");
+		
+		File file = new File("./Instances/inst 7.txt");
 		try {
 			
 			
@@ -27,6 +22,12 @@ public class Main {
 			//mkp.setMinValue(100);
 			System.out.println(mkp);
 			
+			/*
+			//GENETIC ALGORITHM
+			int NbIndividus=4;
+			int crossoverPoint=5;
+			double mutationRate=0.3;
+			int maxIter=10;
 			GeneticAlgorithm GA=new GeneticAlgorithm(mkp);
 			System.out.println("*********initial population*********");
 			LinkedList<State>population=GA.generatePopulation(NbIndividus);	
@@ -60,15 +61,20 @@ public class Main {
 				System.out.println("weight: "+mkp.totalWeight(c));
 				System.out.println(mkp.getAvailableObjects(c));
 			});
-		
+		*/
 	
-		
-		
-		
-		
-		
-		
-		
+			
+			//BSO
+			
+			int flip=2;
+			int localSearchIterations=5;
+			int maxIter=5;
+			int nbBees=3;
+			int maxChances=5;
+			BeeSwarmOptimization bso=new BeeSwarmOptimization(mkp);
+			State srefInit=bso.getSref();
+			State bestSol = bso.execute(maxIter, flip, nbBees, maxChances, localSearchIterations);
+			System.out.println(bso.toString(maxIter,srefInit,bestSol));
 		
 			
 		} catch (IOException | InvalidInstanceException | InvalidFileTypeException e) {

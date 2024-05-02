@@ -27,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import pkg1.MkpInstanceFileReader.InvalidFileTypeException;
@@ -179,6 +180,10 @@ public class GUI extends JFrame{
 		
 		//sliders
 		
+		//buttons
+		JButton searchBtn=new JButton("SEARCH");
+		JButton selectBtn=new JButton("LOAD");
+		JButton generateBtn=new JButton("GENERATE");
 		//Radio buttons
 		JRadioButton b1=new JRadioButton("GA ");
 		JRadioButton b2=new JRadioButton("BSO");
@@ -195,16 +200,32 @@ public class GUI extends JFrame{
 		
 		
 		b1.addActionListener(e->{
+			solutionLabel.setVisible(true);
 			solutionLabel.setText("GENETIC ALGORITHM");
 			GAParamsPanel();
+			sp3.setVisible(false);
+			sp4.setVisible(false);
+			solutionDescription.setVisible(false);
+			searchBtn.setBackground(Color.LIGHT_GRAY);
+			searchBtn.setEnabled(false);
 			revalidate();
 			choice=1;
 
 		});
 		b2.addActionListener(e->{
+			solutionLabel.setVisible(true);
 			solutionLabel.setText("BEE SWARM OPTIMIZATION");
 			BSOParamsPanel();
-			revalidate();
+		
+			searchBtn.setBackground(topPanelBgColor);
+			searchBtn.setEnabled(true);
+			sp3.setVisible(false);
+			sp4.setVisible(false);
+			solutionDescription.setVisible(false);
+			initialPopulationLabel.setVisible(false);
+			finalPopulationLabel.setVisible(false);
+			solutionDescription.setVisible(false);
+			
 			choice=2;
 
 		});
@@ -212,10 +233,7 @@ public class GUI extends JFrame{
 		
 		
 
-		//buttons
-		JButton searchBtn=new JButton("SEARCH");
-		JButton selectBtn=new JButton("LOAD");
-		JButton generateBtn=new JButton("GENERATE");
+
 		
 		selectBtn.setFocusable(false);
 		selectBtn.setPreferredSize(new Dimension(120,40));
@@ -233,8 +251,10 @@ public class GUI extends JFrame{
 			
 				generateBtn.setBackground(topPanelBgColor);
 				generateBtn.setEnabled(true);
-				searchBtn.setBackground(Color.LIGHT_GRAY);
-				searchBtn.setEnabled(false);
+				if(choice==1) {
+					searchBtn.setBackground(Color.LIGHT_GRAY);
+					searchBtn.setEnabled(false);
+				}
 				b1.setVisible(true);
 				b2.setVisible(true);
 				try {
@@ -285,7 +305,7 @@ public class GUI extends JFrame{
 			   
 					
 					solutionDescription.setVisible(false);
-			        solutionLabel.setVisible(false);
+			        //solutionLabel.setVisible(false);
 			        sp3.setVisible(false);
 			        sp4.setVisible(false);
 			        initialPopulationLabel.setVisible(false);
@@ -302,7 +322,7 @@ public class GUI extends JFrame{
 			        tablesContainer.add(sp2);
 					tablesContainer.add(solutionLabel);
 					if(choice==1)GAParamsPanel();
-					else BSOParamsPanel();
+					else if(choice==2) BSOParamsPanel();
 					revalidate();
 				    
 				} catch (IOException | InvalidInstanceException | InvalidFileTypeException e2) {
@@ -326,8 +346,7 @@ public class GUI extends JFrame{
 			if(choice==0)
 				JOptionPane.showMessageDialog(this,"Choose an algorithm","warning",JOptionPane.WARNING_MESSAGE);
 			
-			else {
-				
+			if(choice==1) {
 			String initPopInp=initPopulationInp.getText().trim().toString();
 			if(initPopInp.isEmpty()||!isInteger(initPopInp)) {
 				JOptionPane.showMessageDialog(this,"Invalid Input","error",JOptionPane.ERROR_MESSAGE);
@@ -372,6 +391,10 @@ public class GUI extends JFrame{
 				this.revalidate();
 			}
 			}
+			if(choice==2) {
+				
+				
+			}
 		});
 		searchBtn.setFocusable(false);
 		searchBtn.setPreferredSize(new Dimension(100,40));
@@ -408,11 +431,10 @@ public class GUI extends JFrame{
 						
 						double  mutationRate=(double)mutationSlider.getValue()/100;
 						//start GA
-						System.out.println(crossoverPoint1+"  "+crossoverPoint2);
+						//System.out.println(crossoverPoint1+"  "+crossoverPoint2);
 						startTime= System.currentTimeMillis();	    
 						LinkedList<State>finalPopulation;
-						if(crossoverPoint2==-1)finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, mutationRate,selectionMethod);
-						else finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, crossoverPoint2,mutationRate,selectionMethod);
+						finalPopulation=GA.Execute(population, maxIter, crossoverPoint1, crossoverPoint2,mutationRate,selectionMethod);
 						
 						//after n iterations
 						if(checkbox.isSelected())initialPopulationMatrix=GA.stringifyPopulation(finalPopulation);
@@ -447,14 +469,57 @@ public class GUI extends JFrame{
 						description.setText(bestSol.toString()+"\n");
 						totalValue.setText(String.valueOf(mkp.totalValue(bestSol))+" $");
 						int nbUsedObjects=nbObj-mkp.getAvailableObjects(bestSol).size();
-						totalWeight.setText(String.valueOf(mkp.totalWeight(bestSol))+" KG (used "+nbUsedObjects+"/"+nbObj+" objects)");
+						totalWeight.setText(String.valueOf(mkp.totalWeight(bestSol))+" KG (selected "+nbUsedObjects+"/"+nbObj+" objects)");
 						
 					 
 					}
 				}
 				else {
 					//BSO
+					solutionDescription.setVisible(false);
+					sp3.setVisible(true);
+					tablesContainer.add(sp3);
+					JTextArea textArea = new JTextArea();
+					sp3.setPreferredSize(new Dimension(700,395));
 					
+					String flipText = flipInp.getText().trim();
+			        String bsoIterText = bsoIterInp.getText().trim();
+			        String beesText = beesInp.getText().trim();
+			        String maxChancesText = maxChancesInp.getText().trim();
+			        String localSearchIterText = localSearchIterInp.getText().trim();
+
+			        if (flipText.isEmpty() || bsoIterText.isEmpty() || beesText.isEmpty() ||
+			                maxChancesText.isEmpty() || localSearchIterText.isEmpty() ||
+			                !isInteger(flipText) || !isInteger(bsoIterText) || !isInteger(beesText) ||
+			                !isInteger(maxChancesText) || !isInteger(localSearchIterText)) {
+			        	JOptionPane.showMessageDialog(this, "Invalid Input", "Error", JOptionPane.ERROR_MESSAGE);
+			         
+			        }
+			        else {
+			        	
+			            int flip = Integer.parseInt(flipText);
+			            int maxIter = Integer.parseInt(bsoIterText);
+			            int nbBees = Integer.parseInt(beesText);
+			            int maxChances = Integer.parseInt(maxChancesText);
+			            int localSearchIterations = Integer.parseInt(localSearchIterText);
+		
+						BeeSwarmOptimization bso=new BeeSwarmOptimization(mkp);
+						State srefInit=bso.getSref();
+						//end BSO
+						startTime= System.currentTimeMillis();
+						State bestSol = bso.execute(maxIter, flip, nbBees, maxChances, localSearchIterations);
+						//end BSO
+						endTime= System.currentTimeMillis();
+						String time=String.valueOf(endTime-startTime)+"ms";
+						int nbUsedObjects=nbObj-mkp.getAvailableObjects(bestSol).size();
+						String weight= String.valueOf(mkp.totalWeight(bestSol))+" KG (selected "+nbUsedObjects+"/"+nbObj+" objects)";
+	
+						textArea.setText(bso.toString(maxIter,srefInit,bestSol)+"\n\nExecution time: "+time+"\nTotal Value: "+mkp.totalValue(bestSol)+"$\nTotal Weight: "+weight);
+						textArea.setEditable(false);
+						sp3.setBorder(BorderFactory.createLineBorder(sidePanelBgColor));
+						sp3.setViewportView(textArea);
+						revalidate();
+			        }
 					
 				}
 				
@@ -586,7 +651,7 @@ public class GUI extends JFrame{
 			b2.addActionListener(e->{
 				point2Slider.setEnabled(true);
 				point2Slider.setValue(point1Slider.getValue()+1);
-	
+				
 				revalidate();
 			});
 			
@@ -695,13 +760,103 @@ public class GUI extends JFrame{
 	
 			this.revalidate();
 	  }
+	
+		JLabel flipLabel=new JLabel("Flip");
+		JLabel bsoMaxIterLabel=new JLabel("Max Iterations");
+
+		JLabel nbBeesLabel=new JLabel("Nb Bees");
+		JLabel maxChancesLabel=new JLabel("Max Chances");
+		JLabel localSearchIterationsLabel=new JLabel("Local Search Iter");
+		JTextField flipInp=new JTextField();
+		JTextField bsoIterInp=new JTextField();
+		JTextField beesInp=new JTextField();
+		JTextField maxChancesInp=new JTextField();
+		JTextField localSearchIterInp=new JTextField();
+		
 	  public void BSOParamsPanel() {
+			
 		  	if(ParamsPanel.getComponents().length>0) {
 		  		for(Component c:ParamsPanel.getComponents())ParamsPanel.remove(c);
 		  	}
+		  	//ParamsPanel.setPreferredSize(new Dimension(180,550));
 		  	ParamsPanel.setBackground(null);
+			ParamsPanel.setLayout(new GridLayout(10,1,0,0));
+			//ParamsPanel.setBorder(BorderFactory.createLineBorder(titleColor,1,true));
+			flipLabel.setForeground(sidePanelTextColor);
+			flipLabel.setFont(labelsFont);
+			flipLabel.setPreferredSize(new Dimension(180,5));
+			flipLabel.setHorizontalAlignment(JLabel.CENTER);
+			
+			
+			bsoMaxIterLabel.setForeground(sidePanelTextColor);
+			bsoMaxIterLabel.setFont(labelsFont);
+			bsoMaxIterLabel.setPreferredSize(new Dimension(180,5));
+			bsoMaxIterLabel.setHorizontalAlignment(JLabel.CENTER);
+			
+			
+			nbBeesLabel.setForeground(sidePanelTextColor);
+			nbBeesLabel.setFont(labelsFont);
+			nbBeesLabel.setPreferredSize(new Dimension(180,5));
+			nbBeesLabel.setHorizontalAlignment(JLabel.CENTER);
+			
+			maxChancesLabel.setForeground(sidePanelTextColor);
+			maxChancesLabel.setFont(labelsFont);
+			maxChancesLabel.setPreferredSize(new Dimension(180,5));
+			maxChancesLabel.setHorizontalAlignment(JLabel.CENTER);
+			
+			localSearchIterationsLabel.setForeground(sidePanelTextColor);
+			localSearchIterationsLabel.setFont(labelsFont);
+			localSearchIterationsLabel.setPreferredSize(new Dimension(180,5));
+			localSearchIterationsLabel.setHorizontalAlignment(JLabel.CENTER);
+			
+			flipInp.setFont(labelsFont);
+			flipInp.setBorder(BorderFactory.createLoweredBevelBorder());
+			flipInp.setHorizontalAlignment(JTextField.CENTER);
+			flipInp.setText(String.valueOf(2));
+			flipInp.setPreferredSize(new Dimension(180, 40));
+
+			bsoIterInp.setFont(labelsFont);
+			bsoIterInp.setBorder(BorderFactory.createLoweredBevelBorder());
+			bsoIterInp.setHorizontalAlignment(JTextField.CENTER);
+			bsoIterInp.setText(String.valueOf(5));
+			bsoIterInp.setPreferredSize(new Dimension(180, 40));
+
+			beesInp.setFont(labelsFont);
+			beesInp.setBorder(BorderFactory.createLoweredBevelBorder());
+			beesInp.setHorizontalAlignment(JTextField.CENTER);
+			beesInp.setText(String.valueOf(3));
+			beesInp.setPreferredSize(new Dimension(180, 40));
+
+			maxChancesInp.setFont(labelsFont);
+			maxChancesInp.setBorder(BorderFactory.createLoweredBevelBorder());
+			maxChancesInp.setHorizontalAlignment(JTextField.CENTER);
+			maxChancesInp.setText(String.valueOf(5));
+			maxChancesInp.setPreferredSize(new Dimension(180, 40));
+
+			localSearchIterInp.setFont(labelsFont);
+			localSearchIterInp.setBorder(BorderFactory.createLoweredBevelBorder());
+			localSearchIterInp.setHorizontalAlignment(JTextField.CENTER);
+			localSearchIterInp.setText(String.valueOf(5));
+			localSearchIterInp.setPreferredSize(new Dimension(180, 40));
+
+
+			ParamsPanel.add(bsoMaxIterLabel);
+			ParamsPanel.add(bsoIterInp);
+			ParamsPanel.add(flipLabel);
+			ParamsPanel.add(flipInp);
+			ParamsPanel.add(nbBeesLabel);
+			ParamsPanel.add(beesInp);
+			ParamsPanel.add(maxChancesLabel);
+			ParamsPanel.add(maxChancesInp);
+			ParamsPanel.add(localSearchIterationsLabel);
+			ParamsPanel.add(localSearchIterInp);
+			
 			
 		
+			
+			
+	
+			this.revalidate();
 	  }
 	  
 	

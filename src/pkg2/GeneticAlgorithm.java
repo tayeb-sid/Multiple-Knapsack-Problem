@@ -249,41 +249,9 @@ public class GeneticAlgorithm {
 		
 		return mutatedChild;
 	}
-	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,double mutationRate,String selectionMethod){
-		LinkedList<State>finalPopulation=new LinkedList<State>();
-		finalPopulation.addAll(population);
-		for(int i=0;i<maxIter;i++) {
-			LinkedList<State>parents = null;
-			switch (selectionMethod) {
-		    case "Elitist":
-		    	parents=ElitistSelection(finalPopulation);
-		        break;
-		    case "Random":
-		    	parents=RandomSelection(finalPopulation);
-		        break;
-		    case "Tournament":
-		    	parents=TournamentSelection(finalPopulation);
-		        break;
-		    case "Roulette":
-		    	parents=RouletteSelection(finalPopulation);
-		        break;
-			}
-			
-			State p1= parents.poll();
-			State p2= parents.poll();
-			ArrayList<State>children;
-			children=SinglePointCrossover(p1, p2, crossoverPoint1);
-			ArrayList<State>mutatedChildren=new ArrayList<State>();
-			mutatedChildren.add(Mutation(children.get(0), mutationRate));
-			mutatedChildren.add(Mutation(children.get(1), mutationRate));
-			finalPopulation.clear();
-			finalPopulation.addAll(children);
-			finalPopulation.addAll(mutatedChildren);
-		
-		
-		}
-		return finalPopulation;
-		//Collections.sort(population,fitnessComparator);
+	public ArrayList<State> crossover(State p1,State p2,int crossoverPoint1,int crossoverPoint2) {
+		if(crossoverPoint2==-1)return this.SinglePointCrossover(p1, p2, crossoverPoint1);
+		else return this.BiPointCrossover(p1, p2, crossoverPoint1, crossoverPoint2);
 	}
 	public LinkedList<State> Execute(LinkedList<State>population,int maxIter,int crossoverPoint1,int crossoverPoint2,double mutationRate,String selectionMethod){
 		LinkedList<State>finalPopulation=new LinkedList<State>();
@@ -307,7 +275,7 @@ public class GeneticAlgorithm {
 			State p1= parents.poll();
 			State p2= parents.poll();
 			ArrayList<State>children;
-			children=BiPointCrossover(p1, p2, crossoverPoint1,crossoverPoint2);
+			children=crossover(p1, p2, crossoverPoint1,crossoverPoint2);
 			ArrayList<State>mutatedChildren=new ArrayList<State>();
 			mutatedChildren.add(Mutation(children.get(0), mutationRate));
 			mutatedChildren.add(Mutation(children.get(1), mutationRate));

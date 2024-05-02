@@ -107,7 +107,7 @@ public class Mkp {
 					value+=this.objects.get(j).getValue();
 
 					if(sumWeightsLine>this.knapsacks.get(i).getPMAX()) {
-						System.out.println("pos: "+i+j);
+						//System.out.println("pos: "+i+j);
 						//state.getMatrix()[i][j]=-1;
 					}
 				}
@@ -268,7 +268,11 @@ public class Mkp {
 		Collections.sort(availableObjects,Comparator.comparingDouble(Item::getRatio).reversed());
 		return availableObjects;
 	}
-	
+	public int maxValue() {
+		int max=0;
+		for(Item i:this.objects)max+=i.getValue();
+		return max;
+	}
 	//FOR GUI 
 	 public String[] getObjectNames() {
 		 String []arr=new String[this.NbObjects+1];
